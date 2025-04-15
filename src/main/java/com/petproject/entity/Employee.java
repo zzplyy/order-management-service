@@ -2,6 +2,8 @@ package com.petproject.entity;
 
 import com.petproject.model.Role;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDate;
 
 @Entity
@@ -52,6 +54,7 @@ public class Employee {
     public Long getId() {
         return id;
     }
+
 
     public String getFirstName() {
         return firstName;
