@@ -1,6 +1,10 @@
 package com.petproject.dto;
 
+import org.springframework.validation.ObjectError;
+
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeResponseDTO {
 
@@ -10,9 +14,9 @@ public class EmployeeResponseDTO {
     private String email;
     private String role;
     private LocalDate hireDate;
+    private List<String> validationErrors; // Добавим поле для ошибок валидации
 
-    public EmployeeResponseDTO() {}
-
+    // Конструктор для обычного ответа
     public EmployeeResponseDTO(Long id, String firstName, String lastName, String email, String role, LocalDate hireDate) {
         this.id = id;
         this.firstName = firstName;
@@ -20,6 +24,13 @@ public class EmployeeResponseDTO {
         this.email = email;
         this.role = role;
         this.hireDate = hireDate;
+    }
+
+    // Конструктор для ошибок валидации
+    public EmployeeResponseDTO(List<ObjectError> errors) {
+        this.validationErrors = errors.stream()
+                .map(ObjectError::getDefaultMessage) // Преобразуем ошибки в сообщения
+                .collect(Collectors.toList());
     }
 
     // Геттеры и сеттеры
@@ -69,5 +80,13 @@ public class EmployeeResponseDTO {
 
     public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
+    }
+
+    public List<String> getValidationErrors() {
+        return validationErrors;
+    }
+
+    public void setValidationErrors(List<String> validationErrors) {
+        this.validationErrors = validationErrors;
     }
 }
