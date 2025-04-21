@@ -8,6 +8,6 @@ public class HelloController {
 
     @GetMapping("/ping")
     public String ping() {
-        return "pong";
+        return "Test controller JAVA";
     }
 }
