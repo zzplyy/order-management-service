@@ -33,6 +33,10 @@ public class EmployeeResponseDTO {
                 .collect(Collectors.toList());
     }
 
+    // Конструктор без параметров (для MapStruct)
+    public EmployeeResponseDTO() {
+    }
+
     // Геттеры и сеттеры
     public Long getId() {
         return id;

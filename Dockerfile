@@ -1,14 +1,14 @@
-FROM eclipse-temurin:21-jdk as build
+# Этап сборки с кэшированием зависимостей
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
-COPY . .
-RUN ./mvnw clean package -DskipTests
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn package -DskipTests
 
 # Финальный образ
-FROM eclipse-temurin:21-jdk
-VOLUME /tmp
-COPY --from=build /app/target/order-management-service-1.0-SNAPSHOT.jar app.jar
-
-# Проверяем содержимое JAR внутри контейнера
-RUN jar tf /app.jar
-
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

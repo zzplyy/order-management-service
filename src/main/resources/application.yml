@@ -7,8 +7,12 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # Чтобы Hibernate обновил схему
-    show-sql: true  # Чтобы видеть SQL-запросы в логах
+      ddl-auto: none  # Отключаем автоматическое управление схемой Hibernate
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  liquibase:
+    enabled: true  # Явно включаем Liquibase
+    change-log: classpath:db/changelog/db.changelog-master.yaml
