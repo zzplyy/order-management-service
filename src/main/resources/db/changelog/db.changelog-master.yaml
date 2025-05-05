@@ -1,4 +1,5 @@
 databaseChangeLog:
+  # changeset для таблицы employees
   - changeSet:
       id: 1
       author: system
@@ -44,6 +45,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
+  # changeset для таблицы client
   - changeSet:
       id: 2
       author: system
@@ -71,3 +73,139 @@ databaseChangeLog:
               - column:
                   name: phone
                   type: VARCHAR(15)
+
+  # changeset для таблицы orders
+  - changeSet:
+      id: 3
+      author: system
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - foreignKeyConstraint:
+                  baseTableName: orders
+                  baseColumnNames: client_id
+                  referencedTableName: client
+                  referencedColumnNames: id
+                  onDelete: CASCADE
+
+  # changeset для создания enum order_status
+  - changeSet:
+      id: 4
+      author: system
+      changes:
+        - createTable:
+            tableName: order_statuses
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  # changeset для добавления order_items
+  - changeSet:
+      id: 5
+      author: system
+      changes:
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: order_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - foreignKeyConstraint:
+                  baseTableName: order_items
+                  baseColumnNames: order_id
+                  referencedTableName: orders
+                  referencedColumnNames: id
+                  onDelete: CASCADE
+              - foreignKeyConstraint:
+                  baseTableName: order_items
+                  baseColumnNames: product_id
+                  referencedTableName: products
+                  referencedColumnNames: id
+                  onDelete: CASCADE
+
+  # changeset для добавления таблицы продуктов (products)
+  - changeSet:
+      id: 6
+      author: system
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: price
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
