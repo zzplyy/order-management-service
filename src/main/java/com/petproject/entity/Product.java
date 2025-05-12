@@ -2,7 +2,6 @@ package com.petproject.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -21,12 +20,8 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
-
     // Конструкторы, геттеры и сеттеры
-    public Product() {
-    }
+    public Product() {}
 
     public Product(String name, String description, BigDecimal price) {
         this.name = name;
@@ -64,13 +59,5 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
     }
 }

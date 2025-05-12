@@ -2,9 +2,10 @@ package com.petproject.entity;
 
 import com.petproject.model.OrderState;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class Order {
@@ -22,12 +23,13 @@ public class Order {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "order_items", joinColumns = @JoinColumn(name = "order_id"))
+    @MapKeyJoinColumn(name = "product_id")
+    private Map<Product, OrderItemData> orderItems = new HashMap<>();
 
-    // Конструкторы, геттеры и сеттеры
     public Order() {
-        this.createdAt = LocalDateTime.now(); // устанавливаем дату создания заказа
+        this.createdAt = LocalDateTime.now();
     }
 
     public Order(OrderState orderStatus, Client client) {
@@ -36,7 +38,6 @@ public class Order {
         this.createdAt = LocalDateTime.now();
     }
 
-    // геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -69,11 +70,11 @@ public class Order {
         this.client = client;
     }
 
-    public List<OrderItem> getOrderItems() {
+    public Map<Product, OrderItemData> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItems(Map<Product, OrderItemData> orderItems) {
         this.orderItems = orderItems;
     }
 }
