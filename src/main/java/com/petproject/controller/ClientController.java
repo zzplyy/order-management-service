@@ -1,7 +1,8 @@
 package com.petproject.controller;
 
-import com.petproject.entity.Client;
-import com.petproject.repository.ClientRepository;
+import com.petproject.dto.ClientRequestDTO;
+import com.petproject.dto.ClientResponseDTO;
+import com.petproject.servicee.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,46 +15,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
 
-    private final ClientRepository clientRepository;
+    private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<Client> create(@Valid @RequestBody Client client) {
-        return ResponseEntity.ok(clientRepository.save(client));
-    }
-
-    @GetMapping
-    public List<Client> getAll() {
-        return clientRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Client> get(@PathVariable Long id) {
-        return clientRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ClientResponseDTO> create(@Valid @RequestBody ClientRequestDTO dto) {
+        return ResponseEntity.ok(clientService.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> update(@PathVariable Long id, @Valid @RequestBody Client updatedClient) {
-        return clientRepository.findById(id)
-                .map(client -> {
-                    client.setName(updatedClient.getName());
-                    client.setEmail(updatedClient.getEmail());
-                    client.setPhone(updatedClient.getPhone());
-                    return ResponseEntity.ok(clientRepository.save(client));
-                }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ClientResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ClientRequestDTO dto) {
+        return ResponseEntity.ok(clientService.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        System.out.println("Trying to delete client with id: " + id);
-        if (!clientRepository.existsById(id)) {
-            System.out.println("Client not found!");
-            return ResponseEntity.notFound().build();
-        }
-        clientRepository.deleteById(id);
-        System.out.println("Client deleted successfully.");
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        clientService.delete(id);
         return ResponseEntity.noContent().build();
     }
-}
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ClientResponseDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(clientService.getById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClientResponseDTO>> getAll() {
+        return ResponseEntity.ok(clientService.getAll());
+    }
+}
